@@ -2,33 +2,36 @@ import { ReactElement, ReactEventHandler, useState } from "react";
 
 const FormTask = () => {
 
+    interface Item {
+        id: number,
+        task: string
+    }
 
-    const [task, setTask] = useState({ id: 1, taskItem: '' });
+    const [inputValue, setInputValue] = useState('');
+    const [id, setId] = useState(0)
 
-    const { taskItem } = task;
+    const [objeto, setObjeto] = useState<Item[]>([])
 
     const onInputChange = ({ target, timeStamp }: React.ChangeEvent<HTMLInputElement>) => {
-        
-        const idCreate = parseInt(timeStamp.toFixed());
-        const taskCreate = target.value;
-        setTask({ ...task, id: idCreate, taskItem: taskCreate })
-
-        console.log(task);
+        setInputValue(target.value);
+        setId(parseInt(timeStamp.toFixed()));
     }
 
-    const onSendLocalStore = (event:React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        setTask({id:1,taskItem:''})
-
+        setObjeto([...objeto, { id, task: inputValue }])
+        console.log(objeto)
     }
+
 
     return (
 
-        <form action="" onSubmit={onSendLocalStore}>
+        <form action="" onSubmit={onSubmit}>
             <div className="input-container bg-transparent">
-                <input type="text" placeholder="" id="input" className="focus:outline-none bg-transparent" value={taskItem} onChange={onInputChange}></input>
+                <input type="text" placeholder="" id="input" className="focus:outline-none bg-transparent" value={inputValue} onChange={onInputChange}></input>
                 <label htmlFor="input">Put a task</label>
+                <p></p>
             </div>
         </form>
     )
