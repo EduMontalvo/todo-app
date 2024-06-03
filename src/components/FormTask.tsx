@@ -1,39 +1,45 @@
-import { ReactElement, ReactEventHandler, useState } from "react";
+import React, { FC, useState } from "react"
+import TodoList from "./TodoList"
 
-const FormTask = () => {
+const FormTask: FC = () => {
 
-    interface Item {
-        id: number,
-        task: string
+    const [todos, setTodos] = useState<string[]>([])
+    const [inputValue, setInputValue] = useState('')
+
+    const addTask = () => {
+        if (inputValue.trim() !== '') {
+            setTodos([...todos, inputValue])
+            setInputValue('')
+        }
     }
 
-    const [inputValue, setInputValue] = useState('');
-    const [id, setId] = useState(0)
-
-    const [objeto, setObjeto] = useState<Item[]>([])
-
-    const onInputChange = ({ target, timeStamp }: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(target.value);
-        setId(parseInt(timeStamp.toFixed()));
+    const removeTodo = (index: number) => {
+        const newTodos = todos.filter((_, i) => i !== index);
+        setTodos(newTodos)
     }
 
-    const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const onInputChange = ({target}:React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(target.value)
+    }
+
+    const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-
-        setObjeto([...objeto, { id, task: inputValue }])
-        console.log(objeto)
+        addTask();
     }
-
 
     return (
 
-        <form action="" onSubmit={onSubmit}>
-            <div className="input-container bg-transparent">
-                <input type="text" placeholder="" id="input" className="focus:outline-none bg-transparent" value={inputValue} onChange={onInputChange}></input>
-                <label htmlFor="input">Put a task</label>
-                <p></p>
-            </div>
-        </form>
+        <div>
+            <form action="" onSubmit={onSubmit}>
+                <div className="input-container bg-transparent">
+                    <input type="text" placeholder="" id="input" className="focus:outline-none bg-transparent" value={inputValue} onChange={onInputChange}></input>
+                    <label htmlFor="input">Put a task</label>
+                </div>
+            </form>
+            <p>Aqui se ira listando las tareas por hacer las cuales estaran pendientes para posteriormente <var className = 'text-cyan-500'>eliminarlas cuando se completen.</var></p>
+            <br />
+            <TodoList todos={todos} removeTodo={removeTodo} />
+        </div>
     )
 }
 
